@@ -1,5 +1,4 @@
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 
 class UserComponents extends StatefulWidget {
   const UserComponents({super.key});
@@ -11,6 +10,24 @@ class UserComponents extends StatefulWidget {
 class _UserComponentsState extends State<UserComponents> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        const CircleAvatar(
+          radius: 50,
+          backgroundColor: Colors.red,
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              'First_Name ' + 'Last_Name',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text('E-mail', style: TextStyle(fontSize: 20))
+          ],
+        )
+      ],
+    );
   }
 }

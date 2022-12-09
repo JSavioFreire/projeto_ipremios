@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../components/user_component.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,9 +28,9 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           for (var i = 0; i < 6; i++)
-            Padding(
+            const Padding(
               padding: EdgeInsets.all(10),
-              child: UserComponent(),
+              child: UserComponents(),
             )
         ],
       ),
