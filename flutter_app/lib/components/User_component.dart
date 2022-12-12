@@ -1,33 +1,47 @@
 import 'package:flutter/material.dart';
 
-class UserComponents extends StatefulWidget {
-  const UserComponents({super.key});
+class UserComponents extends StatelessWidget {
+  final int id;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String avatar;
 
-  @override
-  State<UserComponents> createState() => _UserComponentsState();
-}
+  const UserComponents(
+      this.id, this.firstName, this.lastName, this.email, this.avatar,
+      {super.key});
 
-class _UserComponentsState extends State<UserComponents> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        const CircleAvatar(
-          radius: 50,
-          backgroundColor: Colors.red,
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Text(
-              'First_Name ' + 'Last_Name',
-              style: TextStyle(fontSize: 20),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CircleAvatar(
+            radius: 50,
+            backgroundColor: Colors.grey,
+            backgroundImage: NetworkImage(avatar),
+          ),
+          SizedBox(
+            width: 230,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$firstName $lastName',
+                  style: const TextStyle(fontSize: 19),
+                ),
+                Text(
+                  email,
+                  style: const TextStyle(fontSize: 18, color: Colors.grey),
+                )
+              ],
             ),
-            Text('E-mail', style: TextStyle(fontSize: 20))
-          ],
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

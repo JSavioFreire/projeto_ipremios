@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import '../components/user_component.dart';
+import 'package:flutter_app/components/user_component.dart';
+import '../fetchApi/class_api.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,21 +11,22 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-callApi() async {
-  var client = http.Client();
-  try {
-    var response =
-        await client.get(Uri.parse('https://reqres.in/api/users?page=1'));
-    var res = jsonDecode(response.body);
-    var resData = res['data'] as List;
-    List<ObApi> obs = resData.map((e) => ObApi.fromJson(e)).toList();
-    print(obs);
-  } finally {
-    client.close();
-  }
-}
-
 class _HomePageState extends State<HomePage> {
+  ValueNotifier obs = ValueNotifier([]);
+
+  callApi() async {
+    var client = http.Client();
+    try {
+      var response =
+          await client.get(Uri.parse('https://reqres.in/api/users?page=1'));
+      var res = jsonDecode(response.body);
+      var resData = res['data'] as List;
+      obs.value = resData.map((e) => ObApi.fromJson(e)).toList();
+    } finally {
+      client.close();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     callApi();
@@ -36,34 +37,20 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          for (var i = 0; i < 6; i++)
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: UserComponents(),
-            )
+          ValueListenableBuilder(
+              valueListenable: obs,
+              builder: (_, value, __) => ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: value.length,
+                  itemBuilder: (_, index) => ListTile(
+                      title: UserComponents(
+                          value[index].id,
+                          value[index].firstName,
+                          value[index].lastName,
+                          value[index].email,
+                          value[index].avatar))))
         ],
       ),
     );
-  }
-}
-
-class ObApi {
-  int? id;
-  String? email;
-  String? firstName;
-  String? lastName;
-  String? avatar;
-
-  ObApi({this.id, this.email, this.firstName, this.lastName, this.avatar});
-
-  ObApi.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    email = json['email'];
-    firstName = json['first_name'];
-    lastName = json['last_name'];
-    avatar = json['avatar'];
-  }
-  String toString() {
-    return 'id : $email';
   }
 }
