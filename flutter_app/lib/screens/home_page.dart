@@ -13,10 +13,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ValueNotifier obs = ValueNotifier([]);
+  ValueNotifier inLoader = ValueNotifier(false);
 
   callApi() async {
     var client = http.Client();
     try {
+      inLoader.value = true;
       var response =
           await client.get(Uri.parse('https://reqres.in/api/users?page=1'));
       var res = jsonDecode(response.body);
@@ -24,6 +26,7 @@ class _HomePageState extends State<HomePage> {
       obs.value = resData.map((e) => ObApi.fromJson(e)).toList();
     } finally {
       client.close();
+      inLoader.value = false;
     }
   }
 
@@ -36,19 +39,34 @@ class _HomePageState extends State<HomePage> {
         centerTitle: true,
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ValueListenableBuilder(
-              valueListenable: obs,
-              builder: (_, value, __) => ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: value.length,
-                  itemBuilder: (_, index) => ListTile(
-                      title: UserComponents(
-                          value[index].id,
-                          value[index].firstName,
-                          value[index].lastName,
-                          value[index].email,
-                          value[index].avatar))))
+          AnimatedBuilder(
+              animation: Listenable.merge([obs, inLoader]),
+              builder: (_, __) => inLoader.value
+                  ? const Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: obs.value.length,
+                      itemBuilder: (_, index) => ListTile(
+                              title: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white70, elevation: 3),
+                            onPressed: () {
+                              Navigator.pushNamed(_, '/userpage', arguments: {
+                                'name': obs.value[index].firstName,
+                                'lastName': obs.value[index].lastName,
+                                'email': obs.value[index].email,
+                                'avatar': obs.value[index].avatar
+                              });
+                            },
+                            child: UserComponents(
+                                obs.value[index].id,
+                                obs.value[index].firstName,
+                                obs.value[index].lastName,
+                                obs.value[index].email,
+                                obs.value[index].avatar),
+                          ))))
         ],
       ),
     );

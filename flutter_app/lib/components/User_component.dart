@@ -24,14 +24,13 @@ class UserComponents extends StatelessWidget {
             backgroundImage: NetworkImage(avatar),
           ),
           SizedBox(
-            width: 230,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   '$firstName $lastName',
-                  style: const TextStyle(fontSize: 19),
+                  style: const TextStyle(fontSize: 19, color: Colors.black),
                 ),
                 Text(
                   email,
